@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -13,13 +12,14 @@ import static org.mockito.Mockito.when;
 
 class EmployeeControllerTest {
 
-    private EmployeeService employeeService = mock(EmployeeService.class);
-    private EmployeeController employeeController = new EmployeeController(employeeService);
+    private final EmployeeService employeeService = mock(EmployeeService.class);
+    private final EmployeeController employeeController = new EmployeeController(employeeService);
 
     @Test
     void shouldCallServiceToGetAllEmployees() {
-        List<Employee> expectedEmployees = singletonList(new Employee(1L, 101L, "srini", 18));
-        when(employeeService.findAll()).thenReturn(expectedEmployees);
+        List<Employee> expectedEmployees = singletonList(Employee.builder().id(1L).name("srini").departmentId(101L)
+                .age(18).build());
+        when(employeeService.findAllEmployees()).thenReturn(expectedEmployees);
 
         Collection<Employee> actualEmployees = employeeController.findAll();
 
@@ -28,20 +28,20 @@ class EmployeeControllerTest {
 
     @Test
     void shouldCallServiceToGetEmployeeById() {
-        Employee expectedEmployee = new Employee(1L, 101L, "srini", 18);
-        when(employeeService.findById(1L)).thenReturn(Optional.of(expectedEmployee));
+        Employee expectedEmployee = Employee.builder().id(1L).name("srini").departmentId(101L).age(18).build();
+        when(employeeService.findByEmployeeId(1L)).thenReturn(expectedEmployee);
 
-        Optional<Employee> actualEmployee = employeeController.findById(1L);
+        Employee actualEmployee = employeeController.findById(1L);
 
-        assertThat(actualEmployee).isEqualTo(Optional.of(expectedEmployee));
+        assertThat(actualEmployee).isEqualTo(expectedEmployee);
     }
 
     @Test
     void shouldCallServiceToSaveEmployee() {
-        Employee actualEmployee = new Employee(1L, 101L, "srini", 18);
-        when(employeeService.save(actualEmployee)).thenReturn(actualEmployee);
+        Employee actualEmployee = Employee.builder().id(1L).name("srini").departmentId(101L).age(18).build();
+        when(employeeService.saveEmployee(actualEmployee)).thenReturn(actualEmployee);
 
-        Employee expectedEmployee = employeeController.add(actualEmployee);
+        Employee expectedEmployee = employeeController.saveEmployee(actualEmployee);
 
         assertThat(actualEmployee).isSameAs(expectedEmployee);
     }
