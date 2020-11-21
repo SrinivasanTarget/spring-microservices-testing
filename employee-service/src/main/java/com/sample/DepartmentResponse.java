@@ -11,8 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Document
-public class Department {
+public class DepartmentResponse {
     private Long id;
     private String name;
     private List<Employee> employees = new ArrayList<>();
