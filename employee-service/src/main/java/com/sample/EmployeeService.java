@@ -28,7 +28,7 @@ public class EmployeeService {
 
     public Employee saveEmployee(Employee employee) {
         String uri = fromHttpUrl(departmentServiceURL)
-                .path("/test/" + employee.getId())
+                .path("/" + employee.getId())
                 .toUriString();
 
         ResponseEntity<DepartmentResponse> responseEntity = restTemplate.getForEntity(uri, DepartmentResponse.class);

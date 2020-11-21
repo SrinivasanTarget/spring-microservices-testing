@@ -53,7 +53,7 @@ class EmployeeIntegrationTest {
     public void shouldBeAbleToAddEmployeeSuccessfully() throws Exception {
         final Employee employee = Employee.builder().id(1L).name("srini").age(10).build();
         DepartmentResponse departmentResponse = DepartmentResponse.builder().id(101L).name("CSC").build();
-        stubFor(get(urlPathMatching("/test/1"))
+        stubFor(get(urlPathMatching("/1"))
                 .willReturn(aResponse()
                 .withHeader("content-type", "application/json")
                 .withBody(new ObjectMapper().writeValueAsString(departmentResponse))));
