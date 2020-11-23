@@ -2,19 +2,16 @@ package com.sample;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.common.ConsoleNotifier;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.MongoDBContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -24,11 +21,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = EmployeeApplication.class)
-@ExtendWith(SpringExtension.class)
+@Testcontainers
 @AutoConfigureMockMvc
 class EmployeeIntegrationTest {
 
+    @Container
     final MongoDBContainer mongoDBContainer = new MongoDBContainer(DockerImageName.parse("mongo:latest"));
+
+    final WireMockServer wiremockserver = new WireMockServer(wireMockConfig().dynamicPort());
 
     @Autowired
     private MockMvc mockMvc;
@@ -36,17 +36,9 @@ class EmployeeIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    protected WireMockServer wireMockServer = new WireMockServer(wireMockConfig().dynamicPort().notifier(
-            new ConsoleNotifier(true)));
-
-    @LocalServerPort
-    private int port;
-
     @BeforeEach
     void setUp() {
-        mongoDBContainer.start();
-        wireMockServer.start();
-        WireMock.configureFor("localhost", wireMockServer.port());
+        wiremockserver.start();
     }
 
     @Test
@@ -72,12 +64,12 @@ class EmployeeIntegrationTest {
     void tearDown() {
         mongoDBContainer.close();
         dumpInteractions();
-        wireMockServer.stop();
+        wiremockserver.stop();
     }
 
     public void dumpInteractions() {
         System.err.println(" >>>> WIREMOCK <<<< ");
-        wireMockServer.getAllServeEvents().forEach(event -> System.err.println(event.getRequest().getAbsoluteUrl()));
+        wiremockserver.getAllServeEvents().forEach(event -> System.err.println(event.getRequest().getAbsoluteUrl()));
         System.err.println(" >>>> WIREMOCK <<<< ");
     }
 }
