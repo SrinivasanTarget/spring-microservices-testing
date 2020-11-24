@@ -2,6 +2,7 @@ package com.sample;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,8 +16,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -28,7 +29,7 @@ class EmployeeIntegrationTest {
     @Container
     final MongoDBContainer mongoDBContainer = new MongoDBContainer(DockerImageName.parse("mongo:latest"));
 
-    final WireMockServer wiremockserver = new WireMockServer(wireMockConfig().dynamicPort());
+    final WireMockServer wiremockserver = new WireMockServer();
 
     @Autowired
     private MockMvc mockMvc;
@@ -38,21 +39,22 @@ class EmployeeIntegrationTest {
 
     @BeforeEach
     void setUp() {
+        WireMock.configureFor("localhost", 39080);
         wiremockserver.start();
     }
 
     @Test
-    public void shouldBeAbleToAddEmployeeSuccessfully() throws Exception {
+    void shouldBeAbleToAddEmployeeSuccessfully() throws Exception {
         final Employee employee = Employee.builder().id(1L).name("srini").age(10).build();
         DepartmentResponse departmentResponse = DepartmentResponse.builder().id(101L).name("CSC").build();
-        stubFor(get(urlPathMatching("/1"))
+        wiremockserver.stubFor(get(urlPathEqualTo("/1"))
                 .willReturn(aResponse()
-                .withHeader("content-type", "application/json")
                 .withBody(new ObjectMapper().writeValueAsString(departmentResponse))));
 
         mockMvc.perform(post("/")
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(employee)))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value(employee.getName()))
                 .andExpect(jsonPath("$.id").value(employee.getId()))
@@ -62,7 +64,6 @@ class EmployeeIntegrationTest {
 
     @AfterEach
     void tearDown() {
-        mongoDBContainer.close();
         dumpInteractions();
         wiremockserver.stop();
     }
