@@ -10,4 +10,29 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>employee-service</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>au.com.dius.pact.consumer</groupId>
+            <artifactId>junit5</artifactId>
+            <version>4.1.7</version>
+        </dependency>
+        <dependency>
+            <groupId>au.com.dius.pact.consumer</groupId>
+            <artifactId>java8</artifactId>
+            <version>4.1.7</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>au.com.dius.pact.provider</groupId>
+                <artifactId>maven</artifactId>
+                <version>4.1.7</version>
+                <configuration>
+                    <pactBrokerUrl>http://localhost:8282</pactBrokerUrl>
+                    <pactDirectory>target/pacts</pactDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

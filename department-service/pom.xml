@@ -11,5 +11,12 @@
 
     <artifactId>department-service</artifactId>
 
-
+    <dependencies>
+        <dependency>
+            <groupId>au.com.dius.pact.provider</groupId>
+            <artifactId>junit5</artifactId>
+            <version>4.1.7</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

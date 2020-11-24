@@ -1,5 +1,7 @@
-package com.sample;
+package com.sample.model;
 
+import com.sample.Employee;
+import com.sample.EmployeeRepository;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,7 +10,7 @@ import org.springframework.data.domain.Sort;
 import java.util.List;
 import java.util.Optional;
 
-public class EmployeeRepo implements EmployeeRepository{
+public class EmployeeRepo implements EmployeeRepository {
     @Override
     public <S extends Employee> S save(S s) {
         return null;
