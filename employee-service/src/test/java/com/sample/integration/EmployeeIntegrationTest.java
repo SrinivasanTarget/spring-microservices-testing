@@ -8,11 +8,14 @@ import com.sample.DepartmentResponse;
 import com.sample.Employee;
 import com.sample.EmployeeApplication;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -32,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class EmployeeIntegrationTest {
 
     @Container
-    final MongoDBContainer mongoDBContainer = new MongoDBContainer(DockerImageName.parse("mongo:latest"));
+    final static MongoDBContainer mongoDBContainer = new MongoDBContainer(DockerImageName.parse("mongo:latest"));
 
     final WireMockServer wiremockserver = new WireMockServer(wireMockConfig().port(9000)
             .notifier(new ConsoleNotifier(true)));
@@ -46,6 +49,12 @@ class EmployeeIntegrationTest {
     @BeforeEach
     void setUp() {
         wiremockserver.start();
+    }
+
+    // Ensure that spring is made aware of the new container db url before starting
+    @DynamicPropertySource
+    static void mongoDbProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
     }
 
     @Test
