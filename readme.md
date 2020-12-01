@@ -36,26 +36,24 @@ Each service has its own controller which interacts with rest clients, service w
 **Installation of mongoDB in Mac:**
 
 *  Follow instructions from `https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/`
-*  `brew tap mongodb/brew`
-*  `brew install mongodb-community`
-*  If mongodb/brew/mongodb-community 4.4.1 is already installed, it's just not linked. You can use `brew link mongodb-community` to link this version.
-*  If step 4 does not work, to force the link and overwrite all conflicting files: `brew link --overwrite mongodb-community`
-*  Mongodb should be running before we start the string application.To start the services run: `brew services start mongodb-community@4.4`
 
 **Installation of Mongodb Compass:**
+
 *  In order to view the mongo DB and visually explore your data, you can install MongoDB Compass
 `https://downloads.mongodb.com/compass/mongodb-compass-1.23.0-darwin-x64.dmg
 `
 **To start the application:**
+
 *  Import the cloned repo in IntelliJ as Maven project
 *  Allow some time for the IDE to resolve the dependencies.
 *  Run /employee-service/src/main/java/com/sample/EmployeeApplication.java and src/main/java/com/sample/DepartmentApplication.java or run man spring-boot:run for both the services.  (Employee runs in 8080 and department runs in 8081)
+*  To test your database connectivity, you can use the connection string as “mongodb://localhost:27017” from your DB client 
 
-*  You should see this to be sure that spring is properly connected to the mongoDb. 
+*  You should see this on the console to be sure that application is properly connected to the mongoDb. 
 `INFO 5692 --- [localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:1, serverValue:7}] to localhost:27017
 `
-*  You should see this to be sure that the employee service is running successfully. 
-`INFO 5692 --- [           main] com.sample.EmployeeApplication           : Started EmployeeApplication in 3.403 seconds (JVM running for 9.731
+*  You should see this on the console to be sure that the employee service is running successfully. 
+`INFO 5692 --- [main] com.sample.EmployeeApplication           : Started EmployeeApplication in 3.403 seconds (JVM running for 9.731
 `
 
 
@@ -83,14 +81,16 @@ Follow instructions from `https://mkyong.com/maven/how-to-install-maven-in-windo
 
 
 **To start the application:**
+
 *  Import the cloned repo in IntelliJ as Maven project
 *  Allow some time for the IDE to bring up the dependencies.
 *  Run /employee-service/src/main/java/com/sample/EmployeeApplication.java and src/main/java/com/sample/DepartmentApplication.java or run man spring-boot:run for both the services.  (Employee runs in 8080 and department runs in 8081)
+*  To test your database connectivity, you can use the connection string as “mongodb://localhost:27017” from your DB client 
 
-*  You should see this to be sure that spring is properly connected to the mongoDb. 
+*  You should see this on the console to be sure that spring is properly connected to the mongoDb. 
 `INFO 5692 --- [localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:1, serverValue:7}] to localhost:27017
 `
-*  You should see this to be sure that the employee service is running successfully. 
-`INFO 5692 --- [           main] com.sample.EmployeeApplication           : Started EmployeeApplication in 3.403 seconds (JVM running for 9.731
+*  You should see this on the console to be sure that the employee service is running successfully. 
+`INFO 5692 --- [main] com.sample.EmployeeApplication           : Started EmployeeApplication in 3.403 seconds (JVM running for 9.731
 `
 
