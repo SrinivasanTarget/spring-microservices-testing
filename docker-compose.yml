@@ -30,5 +30,10 @@ services:
       PACT_BROKER_PORT: "9292"
       PACT_BROKER_LOG_LEVEL: INFO
 
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+
 volumes:
   postgres-volume:

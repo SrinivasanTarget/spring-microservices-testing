@@ -1,0 +1,27 @@
+pipeline {
+    agent any
+
+    tools {
+        maven "M3"
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                sh "mvn clean install -Dmaven.test.skip=true -pl employee-service"
+                sh "docker build -t employee-service . -f employee-service/Dockerfile"
+            }
+            post {
+                success {
+                    junit '**/target/surefire-reports/TEST-*.xml'
+                    archiveArtifacts 'target/*.jar'
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh "docker run --name employee-service -p 8080:8080 --network spring-microservices-testing_default employee-service"
+            }
+        }
+    }
+}
