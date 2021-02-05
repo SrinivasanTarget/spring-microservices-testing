@@ -10,7 +10,7 @@ pipeline {
             }
             post {
                 success {
-                    archiveArtifacts 'target/*.jar'
+                    archiveArtifacts 'department-service/target/*.jar'
                 }
             }
         }
