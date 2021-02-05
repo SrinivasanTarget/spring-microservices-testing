@@ -17,7 +17,8 @@ pipeline {
         stage('Deploy') {
             steps {
                 withMaven(maven: 'Maven') {
-                    sh "docker run --name employee-service -p 8080:8080 --network spring-microservices-testing_default employee-service"
+                    sh "docker rm -f employee-service"
+                    sh "docker run -d --name employee-service -p 8080:8080 --network spring-microservices-testing_default employee-service"
                 }
             }
         }
