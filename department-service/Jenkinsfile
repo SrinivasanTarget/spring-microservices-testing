@@ -14,6 +14,20 @@ pipeline {
                 }
             }
         }
+//         stage('Contract Tests') {
+//             steps {
+//                 withMaven(maven: 'Maven') {
+//                     sh "mvn test -Dtest=DepartmentProviderTest -pl department-service"
+//                 }
+//             }
+//         }
+//         stage('Can-i-deploy') {
+//             steps {
+//                 withMaven(maven: 'Maven') {
+//                     sh "docker run --network spring-microservices-testing_default --rm pactfoundation/pact-cli:latest broker can-i-deploy -a employeeConsumer --to pre-prod --verbose --broker-base-url http://localhost:8282"
+//                 }
+//             }
+//         }
         stage('Deploy') {
             steps {
                 withMaven(maven: 'Maven') {
@@ -22,5 +36,12 @@ pipeline {
                 }
             }
         }
+//         stage('Tag Contracts') {
+//             steps {
+//                 withMaven(maven: 'Maven') {
+//                     sh "docker run -d --name department-service -p 8081:8081 --network spring-microservices-testing_default department-service"
+//                 }
+//             }
+//         }
     }
 }

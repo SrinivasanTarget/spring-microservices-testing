@@ -18,8 +18,8 @@ import org.springframework.boot.web.server.LocalServerPort;
 
 
 @Provider("departmentProvider")
-@Consumer("departmentConsumer")
-@PactBroker(host = "localhost", port = "8282")
+@Consumer("employeeConsumer")
+@PactBroker(host = "spring-microservices-testing_pact_broker_1", port = "8282")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class DepartmentProviderTest {
 
