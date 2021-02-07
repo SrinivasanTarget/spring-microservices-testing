@@ -24,7 +24,7 @@ pipeline {
         stage('Can-i-deploy') {
             steps {
                 withMaven(maven: 'Maven') {
-                    sh "docker run --network spring-microservices-testing_default --rm pactfoundation/pact-cli:latest broker can-i-deploy -a departmentProvider --to pre-prod --verbose --broker-base-url http://172.20.0.3:9292"
+                    sh "docker run --network spring-microservices-testing_default --rm pactfoundation/pact-cli:latest broker can-i-deploy -a departmentProvider --version 0.0.0 --to pre-prod --verbose --broker-base-url http://172.20.0.3:9292"
                 }
             }
         }
