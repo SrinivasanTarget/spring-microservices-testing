@@ -19,7 +19,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 
 @Provider("departmentProvider")
 @Consumer("employeeConsumer")
-@PactBroker(host = "172.20.0.3", port = "8282")
+@PactBroker(host = "172.20.0.3", port = "9292")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class DepartmentProviderTest {
 
