@@ -14,13 +14,13 @@ pipeline {
                 }
             }
         }
-//         stage('Contract Tests') {
-//             steps {
-//                 withMaven(maven: 'Maven') {
-//                     sh "mvn test -Dtest=DepartmentProviderTest -pl department-service"
-//                 }
-//             }
-//         }
+        stage('Contract Tests') {
+            steps {
+                withMaven(maven: 'Maven') {
+                    sh "mvn test -Dtest=DepartmentProviderTest -pl department-service"
+                }
+            }
+        }
 //         stage('Can-i-deploy') {
 //             steps {
 //                 withMaven(maven: 'Maven') {
@@ -36,12 +36,12 @@ pipeline {
                 }
             }
         }
-//         stage('Tag Contracts') {
-//             steps {
-//                 withMaven(maven: 'Maven') {
-//                     sh "docker run -d --name department-service -p 8081:8081 --network spring-microservices-testing_default department-service"
-//                 }
-//             }
-//         }
+        stage('Tag Contracts') {
+            steps {
+                withMaven(maven: 'Maven') {
+                    sh "docker run --network=host --rm pactfoundation/pact-cli:latest broker create-version-tag -a departmentProvider -e 1.0.0 -t pre-prod -b http://localhost:9292"
+                }
+            }
+        }
     }
 }
