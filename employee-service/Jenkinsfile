@@ -43,12 +43,12 @@ pipeline {
                 }
             }
         }
-//         stage('Tag Contracts') {
-//             steps {
-//                 withMaven(maven: 'Maven') {
-//                     sh "docker run --network=host --rm pactfoundation/pact-cli:latest broker create-version-tag -a employeeConsumer -e 1.0.0 -t pre-prod -b http://localhost:9292"
-//                 }
-//             }
-//         }
+        stage('Tag Contracts') {
+            steps {
+                withMaven(maven: 'Maven') {
+                    sh "docker run --network spring-microservices-testing_default --rm pactfoundation/pact-cli:latest broker create-version-tag -a employeeConsumer -e 1.0.0 -t pre-prod -b http://localhost:9292"
+                }
+            }
+        }
     }
 }
