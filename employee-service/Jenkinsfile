@@ -1,0 +1,54 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                withMaven(maven: 'Maven') {
+                    sh "mvn install -Dmaven.test.skip=true -pl employee-service"
+                    sh "docker build -t employee-service . -f employee-service/Dockerfile"
+                }
+            }
+            post {
+                success {
+                    archiveArtifacts 'employee-service/target/*.jar'
+                }
+            }
+        }
+        stage('Contract Tests') {
+            steps {
+                withMaven(maven: 'Maven') {
+                    sh "mvn test -Dtest=EmployeeConsumerTest -pl employee-service"
+                }
+            }
+        }
+        stage('Publish Contracts') {
+            steps {
+                withMaven(maven: 'Maven') {
+                    sh "mvn pact:publish -pl employee-service"
+                }
+            }
+        }
+        stage('Can-i-deploy') {
+            steps {
+                withMaven(maven: 'Maven') {
+                    sh "docker run --network spring-microservices-testing_default --rm pactfoundation/pact-cli:latest broker can-i-deploy -a employeeConsumer --version 0.0.1-SNAPSHOT --to pre-prod --verbose --broker-base-url http://172.20.0.3:9292"
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                withMaven(maven: 'Maven') {
+                    sh "docker rm -f employee-service"
+                    sh "docker run -d --name employee-service -p 8080:8080 --network spring-microservices-testing_default employee-service"
+                }
+            }
+        }
+        stage('Tag Contracts') {
+            steps {
+                withMaven(maven: 'Maven') {
+                    sh "docker run --network spring-microservices-testing_default --rm pactfoundation/pact-cli:latest broker create-version-tag -a employeeConsumer -e 0.0.1-SNAPSHOT -t pre-prod -b http://172.20.0.3:9292"
+                }
+            }
+        }
+    }
+}

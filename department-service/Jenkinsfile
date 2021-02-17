@@ -1,0 +1,47 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                withMaven(maven: 'Maven') {
+                    sh "mvn install -Dmaven.test.skip=true -pl department-service"
+                    sh "docker build -t department-service . -f department-service/Dockerfile"
+                }
+            }
+            post {
+                success {
+                    archiveArtifacts 'department-service/target/*.jar'
+                }
+            }
+        }
+        stage('Contract Tests') {
+            steps {
+                withMaven(maven: 'Maven') {
+                    sh "mvn test -Dtest=DepartmentProviderTest -pl department-service"
+                }
+            }
+        }
+        stage('Can-i-deploy') {
+            steps {
+                withMaven(maven: 'Maven') {
+                    sh "docker run --network spring-microservices-testing_default --rm pactfoundation/pact-cli:latest broker can-i-deploy -a departmentProvider --version 0.0.0 --to pre-prod --verbose --broker-base-url http://172.20.0.3:9292"
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                withMaven(maven: 'Maven') {
+                    sh "docker rm -f department-service"
+                    sh "docker run -d --name department-service -p 8081:8081 --network spring-microservices-testing_default department-service"
+                }
+            }
+        }
+        stage('Tag Contracts') {
+            steps {
+                withMaven(maven: 'Maven') {
+                    sh "docker run --network spring-microservices-testing_default --rm pactfoundation/pact-cli:latest broker create-version-tag -a departmentProvider -e 0.0.0 -t pre-prod -b http://172.20.0.3:9292"
+                }
+            }
+        }
+    }
+}

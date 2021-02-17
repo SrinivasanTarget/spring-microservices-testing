@@ -21,9 +21,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(PactConsumerTestExt.class)
 @PactTestFor(providerName = "departmentProvider", port = "1234")
-class PactDepartmentConsumerTest {
+class EmployeeConsumerTest {
 
-    @Pact(consumer = "departmentConsumer")
+    @Pact(consumer = "employeeConsumer")
     public RequestResponsePact getDepartmentIDFromDepartmentService(PactDslWithProvider builder) {
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("content-type", "application/json");
